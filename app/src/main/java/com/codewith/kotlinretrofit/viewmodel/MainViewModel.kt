@@ -13,10 +13,12 @@ import com.codewith.kotlinretrofit.util.UrlRequest
 import retrofit2.Call
 import java.util.*
 
-class MainViewModel :Observable(),ApiResponseListener {
+class MainViewModel : Observable(), ApiResponseListener {
     private var retrofitClient: RetrofitClient
     private var apiService: ApiServices
+    private lateinit var apiType: String
     val observablePostResponse = ObservableField<Any>()
+
     init {
         retrofitClient = RetrofitClient()
         apiService = retrofitClient.getRetrofitApiService(ApiUtils.BASE_URL)
@@ -37,19 +39,24 @@ class MainViewModel :Observable(),ApiResponseListener {
             UrlRequest.EMPDETAILS_URL -> {
                 Log.i("MainActivity", "API response:" + response.isSuccessful)
                 val postResponse: PostResponse = response.body() as PostResponse
+                apiType = "POST"
                 observablePostResponse.set(postResponse)
                 setChanged()
                 notifyObservers(postResponse)
             }
             UrlRequest.EMPDETAILS_GET -> {
                 val empListData: List<GetResponse>? = response.body() as List<GetResponse>
+                apiType = "GET"
                 observablePostResponse.set(empListData)
                 setChanged()
                 notifyObservers(empListData)
             }
             else -> Log.i("MainActivity", "API condition Failes")
+
         }
     }
+
+    fun getApiType() = apiType
 
     override fun onReceiveError(request: String, error: String) {
         Log.i("MainActivity", "API Error:" + error)

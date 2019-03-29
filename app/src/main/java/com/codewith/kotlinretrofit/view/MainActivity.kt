@@ -15,9 +15,9 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), Observer, View.OnClickListener {
     lateinit var mainViewModel: MainViewModel
-    lateinit var type: String
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mainViewModel = MainViewModel()
@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity(), Observer, View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnPost -> {
-                type = "post"
                 val employee = Employee()
                 employee.age = "123"
                 employee.name = "test" + UUID.randomUUID().toString()
@@ -37,24 +36,23 @@ class MainActivity : AppCompatActivity(), Observer, View.OnClickListener {
                 mainViewModel.postEmployeeDetails(employee)
             }
             R.id.btnGet -> {
-                type = "get"
                 mainViewModel.getEmployees()
             }
         }
     }
 
     override fun update(o: Observable?, arg: Any?) {
-        when (type) {
-            "post" -> {
+        when (mainViewModel.getApiType()) {
+            "POST" -> {
                 if (arg is PostResponse) {
                     Log.i("MainActivity", "API response Name:" + arg.name)
                 }
             }
-            "get" -> {
+            "GET" -> {
                 if (arg is List<*>) {
                     val empListData: List<GetResponse> = arg.filterIsInstance<GetResponse>()
                     Log.i("MainActivity", "API response Name:" + empListData.size)
-                    for (item in empListData){
+                    for (item in empListData) {
                         Log.i("MainActivity", "API response Name:" + item.employee_name)
                         Log.i("MainActivity", "API response Age:" + item.employee_age)
                     }
